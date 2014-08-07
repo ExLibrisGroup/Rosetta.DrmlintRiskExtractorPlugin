@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project name="DrmLintExtractor" basedir=".">
+
+	<property file="build.properties" />
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="dps-sdk-4.0.1.jar, pdfbox-1.8.2.jar " />
+	</path>
+
+	<target name="clean">
+		<echo>Cleaning the ${build.dir}</echo>
+		<delete dir="${build.dir}" />
+		<delete dir="${target.dir}" />
+	</target>
+
+	<target name="init" depends="clean">
+		<echo>Creating the build directory</echo>
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${build.dir}/lib" />
+		<mkdir dir="${target.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<echo>Compile the source files</echo>
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes" debug="true" includeantruntime="false">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="copy" depends="compile">
+		<copy todir="${build.dir}/lib">
+			<fileset dir="${lib.dir}" />
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${target.dir}/Drmlint-RiskExtractor.jar"
+		     basedir="${build.dir}/classes">
+			<fileset dir="${src.dir}" includes="**" excludes="com/**"/>
+			<fileset dir="." includes="lib/pdfbox-1.8.2.jar" />
+		</jar>
+	</target>
+
+</project>
